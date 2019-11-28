@@ -1,8 +1,9 @@
 // button handlers
-document.getElementById("nextStep").addEventListener("click", nextStep);
-document.getElementById("previousStep").addEventListener("click", previousStep);
 document.getElementById("autoSort").addEventListener("click", autoSort);
 document.getElementById("stopAutoSort").addEventListener("click", stopAutoSort);
+document.getElementById("reset").addEventListener("click", resetVariables);
+document.getElementById("nextStep").addEventListener("click", nextStep);
+document.getElementById("previousStep").addEventListener("click", previousStep);
 
 // global variables
 const box = 25;
@@ -12,6 +13,7 @@ let arrLength = 0;
 let currentStep = 0;
 let savedArray = [];
 let changedIndex = [];
+let highlightedIndex = 0;
 const audio = new Audio('./assets/click.mp3');
 
 // handle steps
@@ -39,12 +41,11 @@ function generateArray (arrLength) {
     const j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
-
-  drawBars(arr);
+  drawBars(arr, [-1]);
   bubbleSort();
 }
 
-function drawBars (arr, arr2) {
+function drawBars (arr, changedIndex) {
   let c = document.getElementById("bubble");
   let ctx = c.getContext("2d");
   ctx.clearRect(0, 0, 1200, 625);
@@ -52,7 +53,15 @@ function drawBars (arr, arr2) {
   audio.play();
 
   for (let i = 0; i < arr.length; i++) {
-    ctx.fillRect(box + (box * i * 2), box * 25, box, -box * arr[i]);
+    console.log(i, changedIndex[highlightedIndex]);
+    if (i === changedIndex[highlightedIndex]) {
+      console.log('hi', i);
+      ctx.fillStyle = "#FF0000";
+      ctx.fillRect(box + (box * i * 2), box * 25, box, -box * arr[i]);
+      ctx.fillStyle = "#000000";
+    } else {
+      ctx.fillRect(box + (box * i * 2), box * 25, box, -box * arr[i]);
+    }
   }
 }
 
@@ -72,8 +81,9 @@ function bubbleSort() {
 
         // making array immutable
         let arr2 = arr.slice();
+
         savedArray.push(arr2);
-        // changedIndex.push(i);
+        changedIndex.push(i);
         sorts ++;
       }
     }
@@ -82,6 +92,7 @@ function bubbleSort() {
     }
   }
   console.log(changedIndex);
+  return changedIndex
 }
 
 function resetVariables () {
@@ -89,15 +100,18 @@ function resetVariables () {
   stepsOutput.innerHTML = currentStep;
   savedArray = [];
   changedIndex = [];
-  stopAutoSort()
+  stopAutoSort();
+  generateArray(arrLength);
 }
 
 function nextStep() {
-    currentStep++;
+  currentStep++;
+
   if (savedArray[currentStep]) {
+    highlightedIndex++;
     stepsOutput.innerHTML = currentStep;
     arr = savedArray[currentStep];
-    drawBars(arr);
+    drawBars(arr, changedIndex);
   } else {
     currentStep--;
     stopAutoSort()
@@ -109,7 +123,7 @@ function previousStep() {
     currentStep --;
     stepsOutput.innerHTML = currentStep;
     arr = savedArray[currentStep];
-    drawBars(arr);
+    drawBars(arr, changedIndex);
   }
   stopAutoSort()
 }
