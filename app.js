@@ -26,9 +26,7 @@ output.innerHTML = rangeSlider.value;
 rangeSlider.oninput = function() {
   output.innerHTML = this.value;
   arrLength = this.value;
-  currentStep = 0;
-  changedIndex = 0;
-  stepsOutput.innerHTML = currentStep;
+  resetVariables();
   generateArray(arrLength);
 };
 
@@ -54,11 +52,7 @@ function drawBars (arr, arr2) {
   audio.play();
 
   for (let i = 0; i < arr.length; i++) {
-    if (!arr) {
-
-    } else {
-      ctx.fillRect(box + (box * i * 2), box * 25, box, -box * arr[i]);
-    }
+    ctx.fillRect(box + (box * i * 2), box * 25, box, -box * arr[i]);
   }
 }
 
@@ -67,7 +61,6 @@ function bubbleSort() {
   let sorted = false;
   let sorts = 0;
   savedArray = [];
-  savedArray.push(arr);
 
   while(!sorted) {
     sorts = 0;
@@ -76,9 +69,11 @@ function bubbleSort() {
         let temp = arr[i];
         arr[i] = arr[i + 1];
         arr[i + 1] = temp;
+
+        // making array immutable
         let arr2 = arr.slice();
         savedArray.push(arr2);
-        changedIndex.push(i);
+        // changedIndex.push(i);
         sorts ++;
       }
     }
@@ -89,24 +84,34 @@ function bubbleSort() {
   console.log(changedIndex);
 }
 
+function resetVariables () {
+  currentStep = 0;
+  stepsOutput.innerHTML = currentStep;
+  savedArray = [];
+  changedIndex = [];
+  stopAutoSort()
+}
+
 function nextStep() {
+    currentStep++;
   if (savedArray[currentStep]) {
-    currentStep ++;
     stepsOutput.innerHTML = currentStep;
     arr = savedArray[currentStep];
     drawBars(arr);
   } else {
-
+    currentStep--;
+    stopAutoSort()
   }
 }
 
 function previousStep() {
-  if (savedArray[currentStep]) {
+  if (currentStep > 0) {
     currentStep --;
     stepsOutput.innerHTML = currentStep;
     arr = savedArray[currentStep];
     drawBars(arr);
   }
+  stopAutoSort()
 }
 
 function autoSort() {
@@ -117,5 +122,3 @@ function stopAutoSort() {
   clearInterval(sort);
 }
 generateArray(12);
-
-
