@@ -53,29 +53,17 @@ function drawBars (arr, changedIndex) {
   audio.play();
 
   let colorGradient = 256 / (arr.length / 3);
-  console.log(colorGradient);
 
   for (let i = 0; i < arr.length; i++) {
 
-    if (i < arr.length / 3) {
-      ctx.fillStyle = `rgb(0, 255, ${255 - (colorGradient * i)})`;
-    } else if (i < arr.length * 2 / 3) {
-      ctx.fillStyle = `rgb(${colorGradient * (i - arr.length / 8)},255 , 0)`;
+    if (arr[i] < (arr.length / 3) + 1) {
+      ctx.fillStyle = `rgb(0, ${128 + (colorGradient * arr[i] / 2)}, ${255 - (colorGradient * arr[i])})`;
+    } else if (arr[i] < (arr.length * 2 / 3) + 1) {
+      ctx.fillStyle = `rgb(${colorGradient * (arr[i] - arr.length / 3)},255 , 0)`;
     } else {
-      ctx.fillStyle = `rgb(255, ${255 - (colorGradient * (i - (arr.length * 2 / 3)))} , 0)`;
+      ctx.fillStyle = `rgb(255, ${255 - (colorGradient * (arr[i] - (arr.length * 2 / 3)))} , 0)`;
     }
-
-
-    if (i === changedIndex[highlightedIndex]) {
-      // ctx.fillStyle = "#FF0000";
       ctx.fillRect(box + (box * i * 2), box * 25, box, -box * arr[i]);
-      i++;
-      // ctx.fillStyle = "#0000ff";
-      ctx.fillRect(box + (box * i * 2), box * 25, box, -box * arr[i]);
-
-    } else {
-      ctx.fillRect(box + (box * i * 2), box * 25, box, -box * arr[i]);
-    }
   }
 }
 
@@ -105,7 +93,6 @@ function bubbleSort() {
       sorted = true;
     }
   }
-  console.log(changedIndex);
   return changedIndex
 }
 
