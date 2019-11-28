@@ -14,11 +14,19 @@ let currentStep = 0;
 let savedArray = [];
 let changedIndex = [];
 let highlightedIndex = 0;
+let sortingSpeed = 200;
 const audio = new Audio('./assets/click.mp3');
 
 // handle steps
 let stepsOutput = document.getElementById("steps");
 stepsOutput.innerHTML = currentStep;
+
+// speed handler
+let sortingRange = document.getElementById("sortingRange");
+
+sortingRange.oninput = function() {
+  sortingSpeed = this.value;
+};
 
 // slider handler
 let rangeSlider = document.getElementById("sliderRange");
@@ -63,7 +71,7 @@ function drawBars (arr, changedIndex) {
     } else {
       ctx.fillStyle = `rgb(255, ${255 - (colorGradient * (arr[i] - (arr.length * 2 / 3)))} , 0)`;
     }
-      ctx.fillRect(box + (box * i * 2), box * 25, box, -box * arr[i]);
+      ctx.fillRect(box / 2 + (box * i), box * 25, box/  2, (-box / 2) * arr[i]);
   }
 }
 
@@ -130,10 +138,10 @@ function previousStep() {
 }
 
 function autoSort() {
-  sort = setInterval(nextStep, 200);
+  sort = setInterval(nextStep, sortingSpeed);
 }
 
 function stopAutoSort() {
   clearInterval(sort);
 }
-generateArray(24);
+generateArray(48);
