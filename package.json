@@ -1,21 +1,31 @@
 {
-  "name": "Sorting-Visualizer",
-  "version": "1.0.0",
-  "description": "* highlight the bars that are swapping * ability to adjust the number of numbers sorted * ability to step backwards * track number of steps * add other sorting algorithms",
-  "main": "app.js",
+  "name": "sorting-visualizer",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-scripts": "3.2.0"
+  },
   "scripts": {
-    "start": "open index.html",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/EvanBC1/Sorting-Visualizer.git"
+  "eslintConfig": {
+    "extends": "react-app"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/EvanBC1/Sorting-Visualizer/issues"
-  },
-  "homepage": "https://github.com/EvanBC1/Sorting-Visualizer#readme"
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
