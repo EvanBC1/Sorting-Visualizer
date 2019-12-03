@@ -5,20 +5,33 @@ import './main.css'
 const box = 25;
 let sort;
 let arr = [];
-let arrLength = 0;
+let arrLength = 48;
 let currentStep = 0;
 let savedArray = [];
 let changedIndex = [];
 let highlightedIndex = 0;
-let sortingSpeed = 200;
-const audio = new Audio('./assets/click.mp3');
+let sortingSpeed = 10;
 
 export default function Canvas() {
   const canvasRef = React.useRef(null);
 
   React.useEffect(() => {
-    generateArray(48);
+    generateArray(arrLength);
   });
+
+  // generates array to be sorted
+  function generateArray (arrLength) {
+    arr = [];
+    for (let i = 0; i < arrLength; i++) {
+      arr.push(i + 1);
+    }
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    bubbleSort();
+    handleDrawing();
+  }
 
   function bubbleSort() {
     let sorted = false;
@@ -45,29 +58,13 @@ export default function Canvas() {
         sorted = true;
       }
     }
-    return changedIndex
-  }
-
-  // generates array to be sorted
-  function generateArray (arrLength) {
-    arr = [];
-    for (let i = 0; i < arrLength; i++) {
-      arr.push(i + 1);
-    }
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    bubbleSort();
-    handleDrawing();
+    arr = savedArray[0];
   }
 
   function handleDrawing() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, 1200, 625);
-
-    // audio.play();
 
     let colorGradient = 256 / (arr.length / 3);
 
@@ -84,15 +81,51 @@ export default function Canvas() {
     }
   }
 
+  function nextStep() {
+    currentStep++;
+    if (savedArray[currentStep]) {
+      highlightedIndex++;
+      arr = savedArray[currentStep];
+      handleDrawing(arr, changedIndex);
+    } else {
+      currentStep--;
+      stopAutoSort()
+    }
+  }
+
+  function previousStep() {
+    if (currentStep > 0) {
+      currentStep --;
+      arr = savedArray[currentStep];
+      handleDrawing(arr, changedIndex);
+    }
+    stopAutoSort()
+  }
+
+  function autoSort() {
+    sort = setInterval(nextStep, sortingSpeed);
+  }
+
+  function stopAutoSort() {
+    clearInterval(sort);
+  }
+
+  function resetVariables () {
+    currentStep = 0;
+    savedArray = [];
+    changedIndex = [];
+    stopAutoSort();
+    generateArray(arrLength);
+  }
 
   return (
 <>
   <div id='controlPanel'>
-    <Button variant="outline-success">Auto Sort</Button>
-    <Button variant="outline-danger">Stop Auto Sort</Button>
-    <Button variant="outline-warning">Previous Step</Button>
-    <Button variant="outline-info">Next Step</Button>
-    <Button variant="outline-secondary">Reset</Button>
+    <Button variant="outline-success" onClick={autoSort}>Auto Sort</Button>
+    <Button variant="outline-danger" onClick={stopAutoSort}>Stop Auto Sort</Button>
+    <Button variant="outline-warning" onClick={previousStep} >Previous Step</Button>
+    <Button variant="outline-info" onClick={nextStep}>Next Step</Button>
+    <Button variant="outline-secondary" onClick={resetVariables}>Reset</Button>
   </div>
     <canvas
       ref={canvasRef}
