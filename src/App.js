@@ -9,7 +9,7 @@ import bubbleSort from "./util/bubbleSort";
 const box = 25;
 let sort;
 let arr = [];
-let arrLength = 48;
+let arrLength = 24;
 let currentStep = 0;
 let savedArray = [];
 let sortingSpeed;
@@ -19,6 +19,7 @@ export default function Canvas() {
   const canvasRef = React.useRef(null);
 
   React.useEffect(() => {
+    console.log('hello');
     generateArray(arrLength);
   });
 
@@ -42,6 +43,10 @@ export default function Canvas() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, 1200, 625);
+
+    if (!arr) {
+      arr = [2,1,3]
+    }
 
     let colorGradient = 256 / (arr.length / 3);
 
@@ -96,7 +101,7 @@ export default function Canvas() {
     sorting = false;
   }
 
-  function valuetext(value) {
+  function speedHandler(value) {
     if (sorting === true) {
       stopAutoSort();
       autoSort();
@@ -105,6 +110,19 @@ export default function Canvas() {
       sortingSpeed = 1000 - value * 18;
     } else {
       sortingSpeed = 100 - (value - 50) * 1.8;
+    }
+    return value;
+  }
+
+  function arrayHandler(value) {
+    let newValue = false;
+    if (arrLength !== value) {
+      newValue = true;
+    }
+    arrLength = value;
+
+    if (newValue === true) {
+      generateArray(arrLength);
     }
     return value;
   }
@@ -119,18 +137,33 @@ export default function Canvas() {
     <Button variant="outline-secondary" onClick={resetVariables}>Reset</Button>
 
     <div id='speedSlider'>
-      <Slider
-        defaultValue={0}
-        getAriaValueText={valuetext}
-        aria-labelledby="discrete-slider-small-steps"
-        step={1}
-        min={0}
-        max={100}
-        valueLabelDisplay="auto"
-      />
       <Typography id="discrete-slider-small-steps" gutterBottom>
         Sorting Speed
       </Typography>
+
+      <Slider
+      defaultValue={50}
+      getAriaValueText={speedHandler}
+      aria-labelledby="discrete-slider-small-steps"
+      step={1}
+      min={0}
+      max={100}
+      valueLabelDisplay="auto"
+    />
+
+      <Typography id="discrete-slider-small-steps" gutterBottom>
+        Array Size
+      </Typography>
+      <Slider
+        defaultValue={24}
+        getAriaValueText={arrayHandler}
+        aria-labelledby="discrete-slider-small-steps"
+        step={1}
+        min={3}
+        max={48}
+        valueLabelDisplay="auto"
+      />
+
     </div>
   </div>
     <canvas

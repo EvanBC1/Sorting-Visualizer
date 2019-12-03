@@ -1,3 +1,5 @@
+Go to [The Sorting Visualizer](https://evans-sorting-visualizer.herokuapp.com/)
+
 # ToDO
 
 * change speed
