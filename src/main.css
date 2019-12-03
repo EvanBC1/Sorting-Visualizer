@@ -1,0 +1,12 @@
+.btn {
+  margin: 15px 15px 15px
+}
+
+canvas {
+  border: 1px solid black
+}
+
+#speedSlider {
+  width: 200px;
+  margin-left: 20px;
+}
