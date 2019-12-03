@@ -1,6 +1,10 @@
 import React from 'react'
 import Button from 'react-bootstrap/Button';
+import Typography from '@material-ui/core/Typography';
+import Slider from '@material-ui/core/Slider';
 import './main.css'
+import bubbleSort from "./util/bubbleSort";
+
 
 const box = 25;
 let sort;
@@ -8,9 +12,8 @@ let arr = [];
 let arrLength = 48;
 let currentStep = 0;
 let savedArray = [];
-let changedIndex = [];
-let highlightedIndex = 0;
-let sortingSpeed = 10;
+let sortingSpeed;
+let sorting = false;
 
 export default function Canvas() {
   const canvasRef = React.useRef(null);
@@ -29,36 +32,10 @@ export default function Canvas() {
       const j = Math.floor(Math.random() * (i + 1));
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-    bubbleSort();
-    handleDrawing();
-  }
-
-  function bubbleSort() {
-    let sorted = false;
-    let sorts = 0;
-    savedArray = [];
-
-    while(!sorted) {
-      sorts = 0;
-      for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-          let temp = arr[i];
-          arr[i] = arr[i + 1];
-          arr[i + 1] = temp;
-
-          // making array immutable
-          let arr2 = arr.slice();
-
-          savedArray.push(arr2);
-          changedIndex.push(i);
-          sorts ++;
-        }
-      }
-      if (sorts === 0) {
-        sorted = true;
-      }
-    }
+    // passes generated array to bubble sorter and draws it on the canvas
+    savedArray = bubbleSort(arr, savedArray);
     arr = savedArray[0];
+    handleDrawing();
   }
 
   function handleDrawing() {
@@ -84,9 +61,8 @@ export default function Canvas() {
   function nextStep() {
     currentStep++;
     if (savedArray[currentStep]) {
-      highlightedIndex++;
       arr = savedArray[currentStep];
-      handleDrawing(arr, changedIndex);
+      handleDrawing(arr);
     } else {
       currentStep--;
       stopAutoSort()
@@ -97,25 +73,40 @@ export default function Canvas() {
     if (currentStep > 0) {
       currentStep --;
       arr = savedArray[currentStep];
-      handleDrawing(arr, changedIndex);
+      handleDrawing(arr);
     }
     stopAutoSort()
   }
 
   function autoSort() {
     sort = setInterval(nextStep, sortingSpeed);
+    sorting = true;
   }
 
   function stopAutoSort() {
     clearInterval(sort);
+    sorting = false;
   }
 
   function resetVariables () {
     currentStep = 0;
     savedArray = [];
-    changedIndex = [];
     stopAutoSort();
     generateArray(arrLength);
+    sorting = false;
+  }
+
+  function valuetext(value) {
+    if (sorting === true) {
+      stopAutoSort();
+      autoSort();
+    }
+    if (value < 51) {
+      sortingSpeed = 1000 - value * 18;
+    } else {
+      sortingSpeed = 100 - (value - 50) * 1.8;
+    }
+    return value;
   }
 
   return (
@@ -126,6 +117,21 @@ export default function Canvas() {
     <Button variant="outline-warning" onClick={previousStep} >Previous Step</Button>
     <Button variant="outline-info" onClick={nextStep}>Next Step</Button>
     <Button variant="outline-secondary" onClick={resetVariables}>Reset</Button>
+
+    <div id='speedSlider'>
+      <Slider
+        defaultValue={0}
+        getAriaValueText={valuetext}
+        aria-labelledby="discrete-slider-small-steps"
+        step={1}
+        min={0}
+        max={100}
+        valueLabelDisplay="auto"
+      />
+      <Typography id="discrete-slider-small-steps" gutterBottom>
+        Sorting Speed
+      </Typography>
+    </div>
   </div>
     <canvas
       ref={canvasRef}

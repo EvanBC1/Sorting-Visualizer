@@ -6,30 +6,13 @@ import Slider from '@material-ui/core/Slider';
 const useStyles = makeStyles(theme => ({
   root: {
     width: 300,
-  },
-  margin: {
-    height: theme.spacing(3),
-    marginLeft: 200,
+    marginLeft: 50,
+    marginTop: 40,
   },
 }));
 
-const marks = [
-  {
-    value: 10,
-    label: '1 Step Per Second',
-  },
-  {
-    value: 1000,
-    label: '100 Steps Per Second',
-  },
-];
-
 function valuetext(value) {
-  return `${value}°C`;
-}
-
-function valueLabelFormat(value) {
-  return marks.findIndex(mark => mark.value === value) + 1;
+  return value;
 }
 
 export default function DiscreteSlider() {
@@ -37,20 +20,18 @@ export default function DiscreteSlider() {
 
   return (
     <div className={classes.root}>
-    <div className={classes.margin}>
-      <Typography id="discrete-slider-restrict" gutterBottom>
-        Sorting Speed
-      </Typography>
       <Slider
-        defaultValue={200}
-        valueLabelFormat={valueLabelFormat}
+        defaultValue={1}
         getAriaValueText={valuetext}
-        aria-labelledby="discrete-slider-restrict"
-        step={null}
-        valueLabelDisplay="auto"
-        marks={marks}
+        aria-labelledby="discrete-slider-small-steps"
+        step={1}
+        min={1}
+        max={100}
+        valueLabelDisplay="on"
       />
-    </div>
+      <Typography id="discrete-slider-small-steps" gutterBottom>
+        Steps Per Second
+      </Typography>
     </div>
   );
 }
