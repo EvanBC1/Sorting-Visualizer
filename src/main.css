@@ -1,5 +1,5 @@
 .btn {
-  margin: 15px 15px 15px
+  margin: 15px 15px 5px
 }
 
 canvas {
@@ -7,6 +7,24 @@ canvas {
 }
 
 #speedSlider {
+  display: inline-block;
   width: 200px;
-  margin-left: 20px;
+}
+
+#arraySlider {
+  display: inline-block;
+  margin-left: 30px;
+  width: 200px;
+}
+
+#root {
+  text-align: center;
+}
+
+div {
+  margin: auto;
+}
+
+Slider {
+
 }

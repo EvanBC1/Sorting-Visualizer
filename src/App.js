@@ -27,7 +27,8 @@ export default function Canvas() {
   function generateArray (arrLength) {
     arr = [];
     for (let i = 0; i < arrLength; i++) {
-      arr.push(i + 1);
+      // arr.push(i + 1);
+      arr.push(Math.ceil(Math.random() * arrLength));
     }
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -130,11 +131,13 @@ export default function Canvas() {
   return (
 <>
   <div id='controlPanel'>
+    <div id='buttons'>
     <Button variant="outline-success" onClick={autoSort}>Auto Sort</Button>
     <Button variant="outline-danger" onClick={stopAutoSort}>Stop Auto Sort</Button>
     <Button variant="outline-warning" onClick={previousStep} >Previous Step</Button>
     <Button variant="outline-info" onClick={nextStep}>Next Step</Button>
     <Button variant="outline-secondary" onClick={resetVariables}>Reset</Button>
+    </div>
 
     <div id='speedSlider'>
       <Typography id="discrete-slider-small-steps" gutterBottom>
@@ -150,7 +153,8 @@ export default function Canvas() {
       max={100}
       valueLabelDisplay="auto"
     />
-
+    </div>
+    <div id='arraySlider'>
       <Typography id="discrete-slider-small-steps" gutterBottom>
         Array Size
       </Typography>
@@ -163,7 +167,6 @@ export default function Canvas() {
         max={48}
         valueLabelDisplay="auto"
       />
-
     </div>
   </div>
     <canvas
