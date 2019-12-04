@@ -59,7 +59,7 @@ export default function Canvas() {
       } else {
         ctx.fillStyle = `rgb(255, ${255 - (colorGradient * (arr[i] - (arr.length * 2 / 3)))} , 0)`;
       }
-      ctx.fillRect(box / 2 + (box * i), box * 25, box / 2, (-box / 2) * arr[i]);
+      ctx.fillRect(box / 4 + (box * i / 1.5), box * 17, box / 2, (-box / 3) * arr[i]);
     }
   }
 
@@ -168,8 +168,8 @@ export default function Canvas() {
   </div>
     <canvas
       ref={canvasRef}
-      width={1200}
-      height={625}
+      width={810}
+      height={425}
     />
 </>
   )
