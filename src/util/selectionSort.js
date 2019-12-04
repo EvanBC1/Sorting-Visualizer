@@ -1,7 +1,6 @@
-export default function selectionSort(arr) {
-  console.log(arr);
-
-  // repeat (number of elements -1 times
+export default function selectionSort(arr, savedArray) {
+   savedArray = [];
+  // repeat (number of elements -1 times)
   for (let i = 0; i < arr.length - 1; i++) {
     // set the first unsorted element as the minimum
     let minIndex = i;
@@ -18,10 +17,12 @@ export default function selectionSort(arr) {
     arr[i] = arr[minIndex];
     arr[minIndex] = temp;
 
+    let arr2 = arr.slice();
+    savedArray.push(arr2);
     }
+   return savedArray;
   }
 
 
-selectionSort([3,9,6,1,2,8,34,15,1,8,0,-5]);
 
-// console.log(`p of i = ${i}`,`v of i = ${arr[i]}`, `p of j = ${j}`, `v of j = ${arr[j]}`);
+

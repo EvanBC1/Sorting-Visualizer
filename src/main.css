@@ -17,14 +17,17 @@ canvas {
   width: 200px;
 }
 
+#sortType {
+  display: inline-block;
+  margin-right: 15px;
+}
+
 #root {
   text-align: center;
 }
 
-div {
-  margin: auto;
-}
-
-Slider {
-
+#dropDown {
+  max-height: 40px;
+  min-width: 120px;
+  margin-top: 10px;
 }

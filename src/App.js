@@ -2,12 +2,18 @@ import React from 'react'
 import Button from 'react-bootstrap/Button';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import './main.css'
-import bubbleSort from "./util/bubbleSort";
 
+import bubbleSort from "./util/bubbleSort";
+import selectionSort from "./util/selectionSort";
+import generateArray from "./util/generateArray";
 
 const box = 25;
-let sort;
+let autoSortInterval;
 let arr = [];
 let arrLength = 24;
 let currentStep = 0;
@@ -15,27 +21,39 @@ let savedArray = [];
 let sortingSpeed;
 let sorting = false;
 
+
 export default function Canvas() {
+
+  // dropdown Menu
+  const [sort, setSort] = React.useState('');
+
+  const inputLabel = React.useRef(null);
+  const [labelWidth, setLabelWidth] = React.useState(0);
+  React.useEffect(() => {
+    setLabelWidth(inputLabel.current.offsetWidth);
+  }, []);
+
+  const handleChange = event => {
+    setSort(event.target.value);
+    resetVariables();
+  };
+  // *********
+
   const canvasRef = React.useRef(null);
 
   React.useEffect(() => {
-    console.log('hello');
-    generateArray(arrLength);
+    sortArray(arrLength);
   });
 
   // generates array to be sorted
-  function generateArray (arrLength) {
-    arr = [];
-    for (let i = 0; i < arrLength; i++) {
-      // arr.push(i + 1);
-      arr.push(Math.ceil(Math.random() * arrLength));
-    }
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
+  function sortArray (arrLength) {
+    arr = generateArray(arrLength);
     // passes generated array to bubble sorter and draws it on the canvas
-    savedArray = bubbleSort(arr, savedArray);
+    if(sort === 'selection') {
+      savedArray = selectionSort(arr, savedArray);
+    } else {
+      savedArray = bubbleSort(arr, savedArray);
+    }
     arr = savedArray[0];
     handleDrawing();
   }
@@ -85,12 +103,12 @@ export default function Canvas() {
   }
 
   function autoSort() {
-    sort = setInterval(nextStep, sortingSpeed);
+    autoSortInterval = setInterval(nextStep, sortingSpeed);
     sorting = true;
   }
 
   function stopAutoSort() {
-    clearInterval(sort);
+    clearInterval(autoSortInterval);
     sorting = false;
   }
 
@@ -98,7 +116,7 @@ export default function Canvas() {
     currentStep = 0;
     savedArray = [];
     stopAutoSort();
-    generateArray(arrLength);
+    sortArray(arrLength);
     sorting = false;
   }
 
@@ -123,7 +141,7 @@ export default function Canvas() {
     arrLength = value;
 
     if (newValue === true) {
-      generateArray(arrLength);
+      sortArray(arrLength);
     }
     return value;
   }
@@ -137,7 +155,24 @@ export default function Canvas() {
     <Button variant="outline-warning" onClick={previousStep} >Previous Step</Button>
     <Button variant="outline-info" onClick={nextStep}>Next Step</Button>
     <Button variant="outline-secondary" onClick={resetVariables}>Reset</Button>
+      <FormControl variant="outlined" id='dropDown'>
+        <InputLabel ref={inputLabel} id="demo-simple-select-outlined-label">
+          Sort Type
+        </InputLabel>
+        <Select
+          labelId="demo-simple-select-outlined-label"
+          id="demo-simple-select-outlined"
+          value={sort}
+          onChange={handleChange}
+          labelWidth={labelWidth}
+        >
+          <MenuItem value={'bubble'}>Bubble</MenuItem>
+          <MenuItem value={'selection'}>Selection</MenuItem>
+        </Select>
+      </FormControl>
     </div>
+
+
 
     <div id='speedSlider'>
       <Typography id="discrete-slider-small-steps" gutterBottom>
@@ -168,6 +203,7 @@ export default function Canvas() {
         valueLabelDisplay="auto"
       />
     </div>
+
   </div>
     <canvas
       ref={canvasRef}
