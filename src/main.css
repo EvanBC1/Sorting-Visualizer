@@ -1,5 +1,5 @@
 .btn {
-  margin: 15px 15px 15px
+  margin: 15px 15px 5px
 }
 
 canvas {
@@ -7,6 +7,27 @@ canvas {
 }
 
 #speedSlider {
+  display: inline-block;
   width: 200px;
-  margin-left: 20px;
+}
+
+#arraySlider {
+  display: inline-block;
+  margin-left: 30px;
+  width: 200px;
+}
+
+#sortType {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+#root {
+  text-align: center;
+}
+
+#dropDown {
+  max-height: 40px;
+  min-width: 120px;
+  margin-top: 10px;
 }
