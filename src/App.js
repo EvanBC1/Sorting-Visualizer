@@ -15,7 +15,6 @@ import generateArray from "./util/generateArray";
 let autoSortInterval;
 let arr = [];
 let arrLength = 24;
-let currentStep = 0;
 let savedArray = [];
 let sortingSpeed;
 let sorting = false;
@@ -27,13 +26,13 @@ export default function Canvas() {
 
   React.useEffect(() => {
     sortArray(arrLength);
-  });
+  },[]);
 
   // generates array to be sorted
   function sortArray (arrLength) {
     arr = generateArray(arrLength);
     // passes generated array to bubble sorter and draws it on the canvas
-    if(sort === 'selection') {
+    if(sort === 'bubble') {
       savedArray = bubbleSort(arr, savedArray);
     } else {
       savedArray = selectionSort(arr, savedArray);
@@ -77,7 +76,7 @@ export default function Canvas() {
       ctx.lineTo(17.5 + (16.5 * savedArray[operation + 1][0]), 445);
       ctx.lineTo(5 + (16.5 * savedArray[operation + 1][0]), 445);
       ctx.fill();
-
+      // drawing minimum arrow
       ctx.fillStyle = `rgb(255, 0, 0)`;
       ctx.beginPath();
       ctx.moveTo(11.25 + (16.5 * savedArray[operation + 1][1]), 426);
@@ -86,6 +85,7 @@ export default function Canvas() {
       ctx.fill();
     }
   }
+
   function nextStep() {
     operation++;
     if (savedArray[operation] !== undefined) {
@@ -94,6 +94,7 @@ export default function Canvas() {
       operation--;
       stopAutoSort()
     }
+    setOperations(operation);
   }
 
   function previousStep() {
@@ -101,6 +102,7 @@ export default function Canvas() {
       operation --;
       handleDrawing(arr);
     }
+    setOperations(operation);
     stopAutoSort()
   }
 
@@ -120,6 +122,7 @@ export default function Canvas() {
     stopAutoSort();
     sortArray(arrLength);
     sorting = false;
+    setOperations(0);
   }
 
   function speedHandler(value) {
@@ -150,14 +153,10 @@ export default function Canvas() {
 
   // dropdown Menu
   const [sort, setSort] = React.useState('');
-
+  const [operations, setOperations] = React.useState(0);
   const inputLabel = React.useRef(null);
-  const [labelWidth, setLabelWidth] = React.useState(0);
-  React.useEffect(() => {
-    setLabelWidth(inputLabel.current.offsetWidth);
-  }, []);
 
-  const handleChange = event => {
+  const handleDropDown = event => {
     setSort(event.target.value);
     resetVariables();
   };
@@ -179,16 +178,13 @@ export default function Canvas() {
           labelId="demo-simple-select-outlined-label"
           id="demo-simple-select-outlined"
           value={sort}
-          onChange={handleChange}
-          labelWidth={labelWidth}
+          onChange={handleDropDown}
         >
           <MenuItem value={'bubble'}>Bubble</MenuItem>
           <MenuItem value={'selection'}>Selection</MenuItem>
         </Select>
       </FormControl>
     </div>
-
-
 
     <div id='speedSlider'>
       <Typography id="discrete-slider-small-steps" gutterBottom>
@@ -219,8 +215,8 @@ export default function Canvas() {
         valueLabelDisplay="auto"
       />
     </div>
-
   </div>
+  <p id='operations'> Number of Operations: {operations} </p>
     <canvas
       ref={canvasRef}
       width={800}

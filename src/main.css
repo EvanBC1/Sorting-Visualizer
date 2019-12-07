@@ -31,3 +31,8 @@ canvas {
   min-width: 120px;
   margin-top: 10px;
 }
+
+#operations {
+  position: absolute;
+  margin-left: 5%;
+}

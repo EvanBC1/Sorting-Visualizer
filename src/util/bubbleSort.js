@@ -1,11 +1,14 @@
 export default function bubbleSort(arr, savedArray) {
   let sorted = false;
   let sorts = 0;
+  let arr2 = arr.slice();
   savedArray = [];
+  savedArray.push(arr2);
 
   while(!sorted) {
     sorts = 0;
     for (let i = 0; i < arr.length - 1; i++) {
+      savedArray.push([i, i + 1]);
       if (arr[i] > arr[i + 1]) {
         let temp = arr[i];
         arr[i] = arr[i + 1];
