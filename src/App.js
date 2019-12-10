@@ -14,30 +14,34 @@ import generateArray from "./util/generateArray";
 
 let autoSortInterval;
 let arr = [];
-let arrLength = 24;
-let savedArray = [];
-let sortingSpeed;
-let sorting = false;
-let operation = 0;
-
+let arrayOfOperations = [];
+let rendered = false;
 
 export default function Canvas() {
+  const [operation, setOperation] = React.useState(0);
+  const [sortType, setSortType] = React.useState('');
+  const [sorting, setSorting] = React.useState(false);
+  const [sortingSpeed, setSortingSpeed] = React.useState();
+  const [arrLength, setArrLength] = React.useState(24);
+  // const [arrayOfOperations, setArrayOfOperations] = React.useState([]);
+
   const canvasRef = React.useRef(null);
 
   React.useEffect(() => {
     sortArray(arrLength);
+    rendered = true;
   },[]);
 
   // generates array to be sorted
   function sortArray (arrLength) {
     arr = generateArray(arrLength);
     // passes generated array to bubble sorter and draws it on the canvas
-    if(sort === 'bubble') {
-      savedArray = bubbleSort(arr, savedArray);
+    if(sortType === 'bubble') {
+      arrayOfOperations = (bubbleSort(arr, arrayOfOperations));
     } else {
-      savedArray = selectionSort(arr, savedArray);
+      arrayOfOperations = (selectionSort(arr, arrayOfOperations));
     }
-    arr = savedArray[0];
+    arr = arrayOfOperations[0];
     handleDrawing();
   }
 
@@ -51,8 +55,8 @@ export default function Canvas() {
 
     let colorGradient = 256 / (arr.length / 3);
 
-    if (savedArray[operation].length > 2) {
-      arr = savedArray[operation];
+    if (arrayOfOperations[operation].length > 2) {
+      arr = arrayOfOperations[operation];
       ctx.clearRect(0, 0, 800, 425);
       for (let i = 0; i < arr.length; i++) {
 
@@ -67,62 +71,59 @@ export default function Canvas() {
       }
 
     }
-    if ((savedArray[operation + 1] !== undefined)) {
+    if ((arrayOfOperations[operation + 1] !== undefined)) {
       // drawing current arrow
       ctx.clearRect(0, 425, 800, 25);
       ctx.fillStyle = `rgb(0, 128, 255)`;
       ctx.beginPath();
-      ctx.moveTo(11.25 + (16.5 * savedArray[operation + 1][0]), 426);
-      ctx.lineTo(17.5 + (16.5 * savedArray[operation + 1][0]), 445);
-      ctx.lineTo(5 + (16.5 * savedArray[operation + 1][0]), 445);
+      ctx.moveTo(11.25 + (16.5 * arrayOfOperations[operation + 1][0]), 426);
+      ctx.lineTo(17.5 + (16.5 * arrayOfOperations[operation + 1][0]), 445);
+      ctx.lineTo(5 + (16.5 * arrayOfOperations[operation + 1][0]), 445);
       ctx.fill();
       // drawing minimum arrow
       ctx.fillStyle = `rgb(255, 0, 0)`;
       ctx.beginPath();
-      ctx.moveTo(11.25 + (16.5 * savedArray[operation + 1][1]), 426);
-      ctx.lineTo(17.5 + (16.5 * savedArray[operation + 1][1]), 445);
-      ctx.lineTo(5 + (16.5 * savedArray[operation + 1][1]), 445);
+      ctx.moveTo(11.25 + (16.5 * arrayOfOperations[operation + 1][1]), 426);
+      ctx.lineTo(17.5 + (16.5 * arrayOfOperations[operation + 1][1]), 445);
+      ctx.lineTo(5 + (16.5 * arrayOfOperations[operation + 1][1]), 445);
       ctx.fill();
     }
   }
 
   function nextStep() {
-    operation++;
-    if (savedArray[operation] !== undefined) {
+    setOperation(operation + 1);
+    if (arrayOfOperations[operation] !== undefined) {
       handleDrawing(arr);
     } else {
-      operation--;
+      setOperation(operation - 1);
       stopAutoSort()
     }
-    setOperations(operation);
   }
 
   function previousStep() {
     if (operation > 0) {
-      operation --;
+      setOperation(operation - 1);
       handleDrawing(arr);
     }
-    setOperations(operation);
     stopAutoSort()
   }
 
   function autoSort() {
     autoSortInterval = setInterval(nextStep, sortingSpeed);
-    sorting = true;
+    setSorting(true);
   }
 
   function stopAutoSort() {
     clearInterval(autoSortInterval);
-    sorting = false;
+    setSorting(false);
   }
 
   function resetVariables () {
-    operation = 0;
-    savedArray = [];
+    arrayOfOperations = [];
     stopAutoSort();
     sortArray(arrLength);
-    sorting = false;
-    setOperations(0);
+    setSorting(false);
+    setOperation(0);
   }
 
   function speedHandler(value) {
@@ -131,9 +132,9 @@ export default function Canvas() {
       autoSort();
     }
     if (value < 51) {
-      sortingSpeed = 1000 - value * 18;
+      setSortingSpeed(1000 - value * 18);
     } else {
-      sortingSpeed = 100 - (value - 50) * 1.85;
+      setSortingSpeed(100 - (value - 50) * 1.85);
     }
     return value;
   }
@@ -143,21 +144,19 @@ export default function Canvas() {
     if (arrLength !== value) {
       newValue = true;
     }
-    arrLength = value;
+    setArrLength(value);
 
-    if (newValue === true) {
+    if (newValue === true && rendered) {
       sortArray(arrLength);
     }
     return value;
   }
 
   // dropdown Menu
-  const [sort, setSort] = React.useState('');
-  const [operations, setOperations] = React.useState(0);
   const inputLabel = React.useRef(null);
 
   const handleDropDown = event => {
-    setSort(event.target.value);
+    setSortType(event.target.value);
     resetVariables();
   };
 
@@ -177,7 +176,7 @@ export default function Canvas() {
         <Select
           labelId="demo-simple-select-outlined-label"
           id="demo-simple-select-outlined"
-          value={sort}
+          value={sortType}
           onChange={handleDropDown}
         >
           <MenuItem value={'bubble'}>Bubble</MenuItem>
@@ -215,8 +214,8 @@ export default function Canvas() {
         valueLabelDisplay="auto"
       />
     </div>
+    <p id='operations'> Number of Operations: {operation} </p>
   </div>
-  <p id='operations'> Number of Operations: {operations} </p>
     <canvas
       ref={canvasRef}
       width={800}

@@ -11,3 +11,9 @@ export const decrement = (num) => {
     payload: num,
   }
 };
+
+export const nextStep = () => {
+  return {
+    type: 'NEXT STEP',
+  }
+};
