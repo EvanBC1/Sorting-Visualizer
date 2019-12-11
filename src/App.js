@@ -1,5 +1,5 @@
 import React from 'react'
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 
 import Button from 'react-bootstrap/Button';
 import Typography from '@material-ui/core/Typography';
@@ -14,6 +14,8 @@ import bubbleSort from "./util/bubbleSort";
 import selectionSort from "./util/selectionSort";
 import generateArray from "./util/generateArray";
 
+import {increaseOperation, decreaseOperation, zeroOperation, changeSortType, sortingYes, sortingNo} from "./actions/graphActions";
+
 let autoSortInterval;
 let arr = [];
 let arrayOfOperations = [];
@@ -21,10 +23,11 @@ let rendered = false;
 
 export default function App() {
   const operation = useSelector(state => state.operation);
+  const sortType = useSelector(state => state.sortType);
+  const sorting = useSelector(state => state.sorting);
+  const dispatch = useDispatch();
 
-  // const [operation, setOperation] = React.useState(0);
-  const [sortType, setSortType] = React.useState('');
-  const [sorting, setSorting] = React.useState(false);
+  // const [sorting, setSorting] = React.useState(false);
   const [sortingSpeed, setSortingSpeed] = React.useState();
   const [arrLength, setArrLength] = React.useState(24);
 
@@ -94,18 +97,18 @@ export default function App() {
   }
 
   function nextStep() {
-    // setOperation(operation + 1);
+    dispatch(increaseOperation());
     if (arrayOfOperations[operation] !== undefined) {
       handleDrawing(arr);
     } else {
-      // setOperation(operation - 1);
+      dispatch(decreaseOperation());
       stopAutoSort()
     }
   }
 
   function previousStep() {
     if (operation > 0) {
-      // setOperation(operation - 1);
+      dispatch(decreaseOperation());
       handleDrawing(arr);
     }
     stopAutoSort()
@@ -113,20 +116,20 @@ export default function App() {
 
   function autoSort() {
     autoSortInterval = setInterval(nextStep, sortingSpeed);
-    setSorting(true);
+    dispatch(sortingYes());
   }
 
   function stopAutoSort() {
     clearInterval(autoSortInterval);
-    setSorting(false);
+    dispatch(sortingNo());
   }
 
   function resetVariables () {
     arrayOfOperations = [];
     stopAutoSort();
     sortArray(arrLength);
-    setSorting(false);
-    // setOperation(0);
+    dispatch(sortingNo());
+    dispatch(zeroOperation());
   }
 
   function speedHandler(value) {
@@ -159,7 +162,7 @@ export default function App() {
   const inputLabel = React.useRef(null);
 
   const handleDropDown = event => {
-    setSortType(event.target.value);
+    dispatch(changeSortType(event.target.value));
     resetVariables();
   };
 

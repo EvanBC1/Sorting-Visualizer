@@ -1,10 +1,10 @@
-import counterReducer from "./counter";
-import operationReducer from "./operationsReducer";
+import {operationReducer, sortTypeReducer, sortingReducer} from "./graphReducer";
 import {combineReducers} from "redux";
 
 const allReducers = combineReducers({
-  counter: counterReducer,
   operation: operationReducer,
+  sortType: sortTypeReducer,
+  sorting: sortingReducer,
 });
 
 export default allReducers;
