@@ -12,8 +12,14 @@ export const decrement = (num) => {
   }
 };
 
-export const nextStep = () => {
+export const increaseOperation = () => {
   return {
-    type: 'NEXT STEP',
+    type: 'INCREASE OPERATION'
+  }
+};
+
+export const decreaseOperation = () => {
+  return {
+    type: 'DECREASE OPERATION'
   }
 };

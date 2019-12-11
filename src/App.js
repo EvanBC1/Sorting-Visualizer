@@ -1,4 +1,6 @@
 import React from 'react'
+import {useSelector} from "react-redux";
+
 import Button from 'react-bootstrap/Button';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
@@ -17,13 +19,14 @@ let arr = [];
 let arrayOfOperations = [];
 let rendered = false;
 
-export default function Canvas() {
-  const [operation, setOperation] = React.useState(0);
+export default function App() {
+  const operation = useSelector(state => state.operation);
+
+  // const [operation, setOperation] = React.useState(0);
   const [sortType, setSortType] = React.useState('');
   const [sorting, setSorting] = React.useState(false);
   const [sortingSpeed, setSortingSpeed] = React.useState();
   const [arrLength, setArrLength] = React.useState(24);
-  // const [arrayOfOperations, setArrayOfOperations] = React.useState([]);
 
   const canvasRef = React.useRef(null);
 
@@ -37,9 +40,9 @@ export default function Canvas() {
     arr = generateArray(arrLength);
     // passes generated array to bubble sorter and draws it on the canvas
     if(sortType === 'bubble') {
-      arrayOfOperations = (bubbleSort(arr, arrayOfOperations));
+      arrayOfOperations = bubbleSort(arr, arrayOfOperations);
     } else {
-      arrayOfOperations = (selectionSort(arr, arrayOfOperations));
+      arrayOfOperations = selectionSort(arr, arrayOfOperations);
     }
     arr = arrayOfOperations[0];
     handleDrawing();
@@ -91,18 +94,18 @@ export default function Canvas() {
   }
 
   function nextStep() {
-    setOperation(operation + 1);
+    // setOperation(operation + 1);
     if (arrayOfOperations[operation] !== undefined) {
       handleDrawing(arr);
     } else {
-      setOperation(operation - 1);
+      // setOperation(operation - 1);
       stopAutoSort()
     }
   }
 
   function previousStep() {
     if (operation > 0) {
-      setOperation(operation - 1);
+      // setOperation(operation - 1);
       handleDrawing(arr);
     }
     stopAutoSort()
@@ -123,7 +126,7 @@ export default function Canvas() {
     stopAutoSort();
     sortArray(arrLength);
     setSorting(false);
-    setOperation(0);
+    // setOperation(0);
   }
 
   function speedHandler(value) {

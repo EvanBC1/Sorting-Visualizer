@@ -1,17 +1,16 @@
 import React from 'react';
 import {useSelector, useDispatch} from "react-redux";
-import {increment, decrement, nextStep} from '../actions/index';
+import {increment, decrement, increaseOperation, decreaseOperation} from '../actions/index';
 
 export default function Test() {
-  const counter = useSelector(state => state.counter);
+  const operation = useSelector(state => state.operation);
   const dispatch = useDispatch();
 
   return (
     <div className='test'>
-      <h1>Counter: {counter}</h1>
-      <button onClick={() => dispatch(increment(5))}>+</button>
-      <button onClick={() => dispatch(decrement(5))}>-</button>
-      <button onClick={() => dispatch(nextStep())}>Next Step</button>
+      <h1>Counter: {operation}</h1>
+      <button onClick={() => dispatch(increaseOperation())}>+</button>
+      <button onClick={() => dispatch(decreaseOperation())}>-</button>
     </div>
   )
 }
