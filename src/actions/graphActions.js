@@ -34,3 +34,10 @@ export const sortingNo = () => {
     type: 'NOT SORTING',
   }
 };
+
+export const changeSortingSpeed = (speed) => {
+  return {
+    type: 'CHANGE SPEED',
+    payload: speed,
+  }
+};

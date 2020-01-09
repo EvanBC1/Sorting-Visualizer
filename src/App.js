@@ -14,7 +14,7 @@ import bubbleSort from "./util/bubbleSort";
 import selectionSort from "./util/selectionSort";
 import generateArray from "./util/generateArray";
 
-import {increaseOperation, decreaseOperation, zeroOperation, changeSortType, sortingYes, sortingNo} from "./actions/graphActions";
+import {increaseOperation, decreaseOperation, zeroOperation, changeSortType, sortingYes, sortingNo, changeSortingSpeed} from "./actions/graphActions";
 
 let autoSortInterval;
 let arr = [];
@@ -25,10 +25,9 @@ export default function App() {
   const operation = useSelector(state => state.operation);
   const sortType = useSelector(state => state.sortType);
   const sorting = useSelector(state => state.sorting);
+  const sortingSpeed = useSelector(state => state.sortingSpeed);
   const dispatch = useDispatch();
 
-  // const [sorting, setSorting] = React.useState(false);
-  const [sortingSpeed, setSortingSpeed] = React.useState();
   const [arrLength, setArrLength] = React.useState(24);
 
   const canvasRef = React.useRef(null);
@@ -47,11 +46,10 @@ export default function App() {
     } else {
       arrayOfOperations = selectionSort(arr, arrayOfOperations);
     }
-    arr = arrayOfOperations[0];
     handleDrawing();
   }
 
-  function handleDrawing() {
+function handleDrawing() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
 
@@ -60,8 +58,7 @@ export default function App() {
     }
 
     let colorGradient = 256 / (arr.length / 3);
-
-    if (arrayOfOperations[operation].length > 2) {
+    if (arrayOfOperations[operation] && arrayOfOperations[operation].length > 2) {
       arr = arrayOfOperations[operation];
       ctx.clearRect(0, 0, 800, 425);
       for (let i = 0; i < arr.length; i++) {
@@ -97,9 +94,11 @@ export default function App() {
   }
 
   function nextStep() {
+    console.log('next step');
     dispatch(increaseOperation());
     if (arrayOfOperations[operation] !== undefined) {
       handleDrawing(arr);
+      console.log(arr)
     } else {
       dispatch(decreaseOperation());
       stopAutoSort()
@@ -115,37 +114,40 @@ export default function App() {
   }
 
   function autoSort() {
+    console.log('autosort');
     autoSortInterval = setInterval(nextStep, sortingSpeed);
     dispatch(sortingYes());
   }
 
   function stopAutoSort() {
+    console.log('stop auto sort');
     clearInterval(autoSortInterval);
     dispatch(sortingNo());
   }
 
   function resetVariables () {
-    arrayOfOperations = [];
+    console.log('reset variables');
     stopAutoSort();
-    sortArray(arrLength);
     dispatch(sortingNo());
     dispatch(zeroOperation());
   }
 
   function speedHandler(value) {
-    if (sorting === true) {
-      stopAutoSort();
-      autoSort();
-    }
+    console.log('speed handler called', sortingSpeed);
+    // if (sorting === true) {
+    //   stopAutoSort();
+    //   autoSort();
+    // }
     if (value < 51) {
-      setSortingSpeed(1000 - value * 18);
+      dispatch(changeSortingSpeed(1000 - value * 18));
     } else {
-      setSortingSpeed(100 - (value - 50) * 1.85);
+      dispatch(changeSortingSpeed(100 - (value - 50) * 1.85));
     }
     return value;
   }
 
   function arrayHandler(value) {
+
     let newValue = false;
     if (arrLength !== value) {
       newValue = true;
@@ -170,11 +172,11 @@ export default function App() {
 <>
   <div id='controlPanel'>
     <div id='buttons'>
-    <Button variant="outline-success" onClick={autoSort}>Auto Sort</Button>
-    <Button variant="outline-danger" onClick={stopAutoSort}>Stop Auto Sort</Button>
-    <Button variant="outline-warning" onClick={previousStep} >Previous Step</Button>
-    <Button variant="outline-info" onClick={nextStep}>Next Step</Button>
-    <Button variant="outline-secondary" onClick={resetVariables}>Reset</Button>
+    <Button variant="outline-success" onClick={() => autoSort()}>Auto Sort</Button>
+    <Button variant="outline-danger" onClick={() => stopAutoSort()}>Stop Auto Sort</Button>
+    <Button variant="outline-warning" onClick={() => previousStep()} >Previous Step</Button>
+    <Button variant="outline-info" onClick={() => nextStep()}>Next Step</Button>
+    <Button variant="outline-secondary" onClick={() => resetVariables()}>Reset</Button>
       <FormControl variant="outlined" id='dropDown'>
         <InputLabel ref={inputLabel} id="demo-simple-select-outlined-label">
           Sort Type

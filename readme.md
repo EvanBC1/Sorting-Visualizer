@@ -1,6 +1,6 @@
 Go to [The Sorting Visualizer](https://evans-sorting-visualizer.herokuapp.com/)
 
-# ToDO
+# ToDo
 
 * add other sorting algorithms
 * Use slider to scroll through steps
@@ -16,3 +16,6 @@ Go to [The Sorting Visualizer](https://evans-sorting-visualizer.herokuapp.com/)
 *  <del> ability to step backwards </del>
 *  <del> track number of steps </del>
 
+# Known Bugs
+* Auto Sort not working - it looks like it may be being called in render statement
+* When changing the array size the size is 1 step before the selected array size
