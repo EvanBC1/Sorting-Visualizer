@@ -19,3 +19,4 @@ Go to [The Sorting Visualizer](https://evans-sorting-visualizer.herokuapp.com/)
 # Known Bugs
 * Auto Sort not working - it looks like it may be being called in render statement
 * When changing the array size the size is 1 step before the selected array size
+* How to get reset to work properly
